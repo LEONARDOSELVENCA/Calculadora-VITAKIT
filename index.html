@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora VITAKIT :Selvenca,L.P</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora VITAKIT :Selvenca,L.P</h1>
+
+        <div class="upload-section">
+            <label for="imageUpload" class="upload-button">Escolher Imagem</label>
+            <input type="file" id="imageUpload" accept="image/*">
+            <p id="fileNameDisplay">Nenhuma imagem selecionada.</p>
+        </div>
+
+        <div class="canvas-container">
+            <div class="color-preview-container">
+                <div class="color-preview" style="background-color: rgb(0,0,0);"></div>
+            </div>
+            <canvas id="imageCanvas"></canvas>
+            <p class="instruction">Clique na área do poço para extrair o RGB.</p>
+            <button id="addWellBtn" class="action-button">Adicionar Poço Extraído</button>
+            <button id="clearWellsBtn" class="action-button clear-button">Limpar Todos os Poços</button>
+        </div>
+
+        <div class="rgb-inputs">
+            <h2>RGB Manual (para teste rápido):</h2>
+            <div class="input-group">
+                <label for="red">Valor R (Vermelho):</label>
+                <input type="number" id="red" min="0" max="255" value="0">
+            </div>
+            <div class="input-group">
+                <label for="green">Valor G (Verde):</label>
+                <input type="number" id="green" min="0" max="255" value="0">
+            </div>
+            <div class="input-group">
+                <label for="blue">Valor B (Azul):</label>
+                <input type="number" id="blue" min="0" max="255" value="0">
+            </div>
+            <button id="calculateBtn">Calcular Redução Manual</button>
+            <div class="result-box manual-result-box">
+                <p><strong>FC Manual:</strong> <span id="fcManualResult">Aguardando...</span></p>
+                <p><strong>Redução Manual:</strong> <span id="reductionManualResult">Aguardando...</span></p>
+            </div>
+        </div>
+
+        <div class="individual-wells-section">
+            <h2>Resultados dos Poços Extraídos</h2>
+            <div id="wellsResultsContainer" class="wells-grid">
+                <p id="noWellsMessage">Nenhum poço adicionado ainda.</p>
+            </div>
+            <button id="calculateAverageBtn" class="action-button main-action-button">Calcular Média dos Poços</button>
+        </div>
+
+        <div class="average-results-section result-box">
+            <h2>Média dos Resultados:</h2>
+            <p><strong>Média FC:</strong> <span id="averageFcResult">Aguardando cálculo...</span></p>
+            <p><strong>Média % Redução:</strong> <span id="averageReductionResult">Aguardando cálculo...</span></p>
+        </div>
+
+        <div class="interpolation-settings">
+            <h2>Configurações de Interpolação</h2>
+            <p class="current-config-display">Padrões Atuais: Ponto 1 (90%, FC 1.7059) e Ponto 2 (35%, FC 3.0000)</p>
+
+            <h3>Ponto 1 (Ex: 90% Redução - Poço Magenta)</h3>
+            <div class="input-group">
+                <label for="red1Percent">% Redução:</label>
+                <input type="number" id="red1Percent" min="0" max="100" value="90" step="0.01">
+            </div>
+            <div class="input-group">
+                <label for="fc1Value">Fator de Cor (FC):</label>
+                <input type="number" id="fc1Value" step="0.0001" value="1.7059">
+            </div>
+
+            <h3>Ponto 2 (Ex: 35% Redução - Poço Púrpura Escuro)</h3>
+            <div class="input-group">
+                <label for="red2Percent">% Redução:</label>
+                <input type="number" id="red2Percent" min="0" max="100" value="35" step="0.01">
+            </div>
+            <div class="input-group">
+                <label for="fc2Value">Fator de Cor (FC):</label>
+                <input type="number" id="fc2Value" step="0.0001" value="3.0000">
+            </div>
+
+            <button id="saveInterpolationBtn">Salvar Padrões de Interpolação</button>
+            <p id="interpolationSaveMessage" class="save-message"></p>
+        </div>
+        <div class="notes">
+            <h3>Notas Importantes:</h3>
+            <ul>
+                <li><strong>Fator de Cor (FC) é calculado por: (R + G + B) / R</strong></li>
+                <li>Esta calculadora utiliza a fórmula de interpolação linear baseada nos seus pontos de calibração específicos.</li>
+                <li>Os valores RGB devem estar entre 0 e 255.</li>
+                <li>A precisão do resultado depende da qualidade da calibração (pontos de referência) e da precisão da obtenção dos valores RGB da sua amostra.</li>
+                <li>Valores de R = 0 (zero) farão com que o Fator de Cor seja indefinido. Nesses casos, a fórmula não é aplicável.</li>
+                <li>A extração de RGB no clique pega a cor média de uma pequena área (definida ao iniciar o app) ao redor do ponto clicado.</li>
+            </ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

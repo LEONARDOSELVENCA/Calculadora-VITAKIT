@@ -1,0 +1,450 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alinhado ao topo para conteúdo que pode crescer */
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px 10px; /* Padding um pouco menor nas laterais para telas pequenas */
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1300px; /* Aumentado para acomodar 3 colunas e mais */
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* Padrão mobile: vertical */
+    gap: 25px; /* Espaçamento entre as seções verticais */
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 0;
+}
+
+/* Seção de Upload */
+.upload-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.upload-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.upload-button:hover {
+    background-color: #218838;
+}
+
+#imageUpload {
+    display: none;
+}
+
+#fileNameDisplay {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Canvas para Imagem */
+.canvas-container {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #eee;
+    /* MODIFICAÇÕES AQUI para posicionar a prévia */
+    display: flex;
+    flex-direction: row; /* Alinha os itens horizontalmente */
+    align-items: center; /* Alinha os itens verticalmente ao centro */
+    padding: 15px; /* Adiciona um pouco de padding interno */
+    gap: 15px; /* Espaço entre a prévia e o canvas */
+    justify-content: flex-start; /* Alinha os itens no início (esquerda) */
+    /* FIM DAS MODIFICAÇÕES */
+}
+
+/* Novo container para a prévia da cor */
+.color-preview-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px; /* Largura da área da prévia */
+    min-width: 60px; /* Garante que não encolha demais */
+    height: 60px; /* Altura da área da prévia */
+}
+
+.color-preview {
+    width: 100%; /* A esfera preenche o container */
+    height: 100%; /* A esfera preenche o container */
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    /* margin: 15px auto 20px auto; <-- REMOVIDA */
+}
+
+
+#imageCanvas {
+    /* MODIFICAÇÃO AQUI para ajustar a largura do canvas */
+    max-width: calc(100% - 75px); /* Largura máxima subtraindo a largura da prévia (60px) + gap (15px) */
+    height: auto;
+    display: block;
+    cursor: crosshair;
+    /* Os botões abaixo do canvas não estão mais dentro do fluxo flex do canvas-container */
+    /* Eles devem ser considerados elementos irmãos ou ter seu próprio container flex/grid se o design precisar */
+}
+
+/* Ajustes para a instrução e botões dentro do canvas-container */
+.canvas-container .instruction,
+.canvas-container .action-button {
+    /* Por estarem em um flex-direction: row, eles tendem a ir para a direita do canvas. */
+    /* Se a intenção é que fiquem embaixo do canvas, a estrutura do HTML precisa ser ajustada */
+    /* ou o flexbox do canvas-container deve envolver APENAS o preview e o canvas */
+    /* Por simplicidade, vou assumir que você quer eles embaixo, então adiciono flex-wrap */
+    flex-basis: 100%; /* Faz com que ocupem a largura total e "quebrem" a linha */
+    text-align: center;
+    margin-top: 10px; /* Para dar um espaçamento */
+}
+
+
+.instruction {
+    font-style: italic;
+    color: #777;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.action-button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: #0056b3;
+}
+
+.action-button.clear-button {
+    background-color: #dc3545;
+}
+
+.action-button.clear-button:hover {
+    background-color: #c82333;
+}
+
+.action-button.main-action-button {
+    padding: 12px 20px;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+/* Inputs RGB e Preview */
+.rgb-inputs h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: bold;
+}
+
+.input-group input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* O .color-preview geral não tem mais a margem auto */
+/* O estilo da esfera agora é definido por .color-preview-container e .color-preview */
+
+
+/* Botão de Calcular Manual */
+#calculateBtn {
+    background-color: #6c757d;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 15px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+#calculateBtn:hover {
+    background-color: #5a6268;
+}
+
+/* Seção de Resultados */
+.result-box {
+    padding-top: 0;
+    border-top: none;
+    text-align: left;
+}
+
+.result-box h2 {
+    color: #333;
+    margin-top: 0;
+}
+
+.result-box p {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.result-box span {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.manual-result-box {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-top: 15px;
+}
+
+/* Nova Seção: Poços Individuais */
+.individual-wells-section {
+    padding-top: 0;
+    border-top: none;
+    text-align: left;
+}
+
+.individual-wells-section h2 {
+    color: #28a745;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.wells-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.well-card {
+    border: 1px solid #cce5ff;
+    background-color: #e0f2ff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    font-size: 14px;
+    position: relative;
+    text-align: left;
+}
+
+.well-card h3 {
+    margin-top: 0;
+    color: #0056b3;
+    font-size: 16px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.well-card .close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    color: #dc3545;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.well-card p {
+    margin-bottom: 5px;
+    color: #333;
+}
+.well-card p strong {
+    color: #000;
+}
+
+#noWellsMessage {
+    text-align: center;
+    grid-column: 1 / -1;
+    color: #888;
+    font-style: italic;
+}
+
+/* Seção de Média */
+.average-results-section {
+    background-color: #d4edda;
+    border: 1px solid #28a745;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.average-results-section h2 {
+    color: #155724;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Seção de Configurações de Interpolação */
+.interpolation-settings {
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #007bff;
+    text-align: left;
+    background-color: #eaf6ff;
+}
+
+.interpolation-settings h2 {
+    color: #0056b3;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.interpolation-settings h3 {
+    color: #007bff;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.interpolation-settings .input-group input[type="number"] {
+    width: calc(100% - 20px);
+    display: block;
+    margin-right: 0;
+    margin-bottom: 10px;
+}
+
+.interpolation-settings .current-config-display {
+    font-size: 15px;
+    font-style: italic;
+    color: #444;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.interpolation-settings .save-message {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* Notas */
+.notes {
+    padding-top: 0;
+    border-top: none;
+    text-align: left;
+    font-size: 14px;
+    color: #666;
+}
+
+.notes h3 {
+    color: #333;
+    margin-top: 0;
+}
+
+.notes ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.notes li {
+    margin-bottom: 5px;
+}
+
+/* ------------------------------------- */
+/* MEDIA QUERIES PARA TELAS MAIORES */
+/* ------------------------------------- */
+
+/* Layout de 2 colunas para telas médias (>= 768px) */
+@media (min-width: 768px) {
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Duas colunas */
+        gap: 25px;
+        grid-template-areas:
+            "header header"
+            "upload upload"
+            "canvas canvas" /* Canvas ainda ocupa 2 colunas */
+            "rgbinputs wellsresults" /* RGB e Poços lado a lado */
+            "manualcalc average"     /* Resultados lado a lado, alinhados aos de cima */
+            "interpolation interpolation" /* Interpolação full width */
+            "notes notes";               /* Notas full width */
+    }
+
+    /* Posicionamento dos elementos na grade */
+    h1 { grid-area: header; }
+    .upload-section { grid-area: upload; }
+    .canvas-container { grid-area: canvas; }
+    .rgb-inputs { grid-area: rgbinputs; }
+    .individual-wells-section { grid-area: wellsresults; }
+    .manual-result-box { grid-area: manualcalc; margin-top: 0; }
+    .average-results-section { grid-area: average; margin-top: 0; }
+    .interpolation-settings { grid-area: interpolation; }
+    .notes { grid-area: notes; }
+}
+
+/* Layout de 3 colunas para telas grandes (>= 1100px) */
+@media (min-width: 1100px) {
+    .container {
+        grid-template-columns: 1fr 1fr 1fr; /* Três colunas de largura igual */
+        gap: 30px; /* Aumenta um pouco o espaçamento entre as colunas */
+        grid-template-areas:
+            "header header header"
+            "upload upload upload"
+            "canvas canvas canvas" /* Canvas continua ocupando 3 colunas */
+            "rgbinputs wellsresults interpolation" /* As 3 principais interações */
+            "manualcalc average ."                 /* Resultados e uma área vazia */
+            "notes notes notes";
+    }
+
+    /* O elemento interpolation-settings precisa ser re-atribuído à nova área no grid */
+    .interpolation-settings { grid-area: interpolation; }
+
+    /* Ajustes específicos de padding para evitar espaços excessivos */
+    .rgb-inputs, .individual-wells-section, .interpolation-settings {
+        padding: 20px; /* Paddings internos para as colunas */
+    }
+    .manual-result-box, .average-results-section {
+        padding: 15px; /* Paddings internos para as caixas de resultado */
+    }
+}
+
+/* Layout para telas Ultra-largas (opcional, se quiser ir além de 3 colunas ou maior preenchimento) */
+@media (min-width: 1500px) {
+    .container {
+        max-width: 1500px; /* Permite que o container se estique ainda mais */
+    }
+}
